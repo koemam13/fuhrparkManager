@@ -145,7 +145,7 @@ public class DetailsDialog extends javax.swing.JDialog
     gridBagConstraints.weightx = 0.2;
     getContentPane().add(jLabel4, gridBagConstraints);
 
-    jLabel5.setText("Erst zulassung");
+    jLabel5.setText("Erstzulassung");
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 4;

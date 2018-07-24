@@ -23,7 +23,7 @@ public class CarsTableModel extends AbstractTableModel
 {
   private final List<Car> cars = new ArrayList<>();
   
-  private static final String [] colNames = {"Fahrzeug","Kennzeichen","Kostenstelle","Kilometer","Erst Zulassung",
+  private static final String [] colNames = {"Fahrzeug","Kennzeichen","Kostenstelle","Kilometer","Erstzulassung",
                                              "Lletzte §57a Begutachtung", "Nächste Begutachtung","Letzter Service",
                                              "Nächster Service", "Kosten"};
 
