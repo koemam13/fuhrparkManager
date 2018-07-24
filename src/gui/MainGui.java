@@ -7,6 +7,7 @@ package gui;
 
 import data.Car;
 import dialogWindows.AddDialog;
+import dialogWindows.DetailsDialog;
 import dialogWindows.EditDialog;
 import java.awt.Dimension;
 import java.io.BufferedInputStream;
@@ -29,7 +30,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import org.apache.log4j.Logger;
-import tableModel.tableModel;
+import tableModel.CarsTableModel;
 
 
 /**
@@ -38,7 +39,7 @@ import tableModel.tableModel;
  */
 public class MainGui extends javax.swing.JFrame
 {
-  private final tableModel model = new tableModel();
+  private final CarsTableModel model = new CarsTableModel();
   
 
   
@@ -74,8 +75,6 @@ public class MainGui extends javax.swing.JFrame
     jPanel3 = new javax.swing.JPanel();
     jbAdd = new javax.swing.JButton();
     jbDel = new javax.swing.JButton();
-    jPanel4 = new javax.swing.JPanel();
-    jbEdit = new javax.swing.JButton();
     jPanel5 = new javax.swing.JPanel();
     jbDetails = new javax.swing.JButton();
     jbMakeDetails = new javax.swing.JButton();
@@ -145,21 +144,6 @@ public class MainGui extends javax.swing.JFrame
 
     jPanel2.add(jPanel3);
 
-    jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Bearbeiten"));
-    jPanel4.setLayout(new java.awt.GridBagLayout());
-
-    jbEdit.setText("Bearbeiten");
-    jbEdit.addActionListener(new java.awt.event.ActionListener()
-    {
-      public void actionPerformed(java.awt.event.ActionEvent evt)
-      {
-        jbEditActionPerformed(evt);
-      }
-    });
-    jPanel4.add(jbEdit, new java.awt.GridBagConstraints());
-
-    jPanel2.add(jPanel4);
-
     jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder("Details anzeigen"));
     jPanel5.setLayout(new java.awt.GridBagLayout());
 
@@ -170,7 +154,14 @@ public class MainGui extends javax.swing.JFrame
     gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     jPanel5.add(jbDetails, gridBagConstraints);
 
-    jbMakeDetails.setText("Details hinzufügen");
+    jbMakeDetails.setText("Details hinzufügen/bearbeiten");
+    jbMakeDetails.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jbMakeDetailsActionPerformed(evt);
+      }
+    });
     jPanel5.add(jbMakeDetails, new java.awt.GridBagConstraints());
 
     jPanel2.add(jPanel5);
@@ -214,37 +205,6 @@ public class MainGui extends javax.swing.JFrame
       model.add(c);
   }//GEN-LAST:event_jbAddActionPerformed
 
-  private void jbEditActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbEditActionPerformed
-  {//GEN-HEADEREND:event_jbEditActionPerformed
-    double baum = 300.0;
-    
-    try
-    {
-      if(model.getRowCount()==0)
-        throw new Exception("Keine Zeilen vorhanden!");
-      
-       int index =jtCars.getSelectedRow();
-      
-   
-   Car c = model.getCar(index);
-   EditDialog dlg = new EditDialog(this, true);
-   dlg.setTF(c);
-   dlg.setMinimumSize(new Dimension(400, 400));
-   dlg.setTitle("Bearbeiten...");
-   dlg.setVisible(true);
-   if (!dlg.isPressedOK()) {
-      return;
-      }
-   Car c2 = dlg.getCar();
-   model.set(index, c2);
-    }
-    catch (Exception ex)
-    {
-      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
-    }
-   
-  }//GEN-LAST:event_jbEditActionPerformed
-
   private void jmSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmSaveActionPerformed
   {//GEN-HEADEREND:event_jmSaveActionPerformed
     try (BufferedWriter w = new BufferedWriter(new FileWriter(f+File.separator+"save.dat"))) {
@@ -264,10 +224,40 @@ public class MainGui extends javax.swing.JFrame
     model.remove(index);
   }//GEN-LAST:event_jbDelActionPerformed
 
+  public File getFile()
+  {
+    return f;
+  }
+  
   private void jtCarsMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jtCarsMouseClicked
   {//GEN-HEADEREND:event_jtCarsMouseClicked
-// TODO add your handling code here:
+    
   }//GEN-LAST:event_jtCarsMouseClicked
+
+  private void jbMakeDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbMakeDetailsActionPerformed
+  {//GEN-HEADEREND:event_jbMakeDetailsActionPerformed
+    int index = jtCars.getSelectedRow();
+    
+    Car c = model.getCar(index);
+    
+    DetailsDialog dlg = new DetailsDialog(this, true);
+    try
+    {
+      dlg.readFile(c);
+    }
+    catch (Exception ex)
+    {
+      java.util.logging.Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    dlg.setMinimumSize(new Dimension(900, 600));
+    dlg.setFileRoot(f);
+    dlg.setVisible(true);
+    
+    if(!dlg.isPressedOK())
+      return;
+    Car c2 = dlg.getCar();
+    model.set(index, c2);
+  }//GEN-LAST:event_jbMakeDetailsActionPerformed
 
   
   private File openFile(){
@@ -368,8 +358,7 @@ public class MainGui extends javax.swing.JFrame
       s = s.replace(".", "");
       
       test.delete();
-      
-      System.out.println(s);
+
     }
     catch (Exception e)
     {
@@ -448,13 +437,11 @@ public class MainGui extends javax.swing.JFrame
   private javax.swing.JPanel jPanel1;
   private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
-  private javax.swing.JPanel jPanel4;
   private javax.swing.JPanel jPanel5;
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JButton jbAdd;
   private javax.swing.JButton jbDel;
   private javax.swing.JButton jbDetails;
-  private javax.swing.JButton jbEdit;
   private javax.swing.JButton jbMakeDetails;
   private javax.swing.JMenuItem jmRefresh;
   private javax.swing.JMenuItem jmSave;

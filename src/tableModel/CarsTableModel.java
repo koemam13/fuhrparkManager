@@ -19,7 +19,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author imperatus
  */
-public class tableModel extends AbstractTableModel
+public class CarsTableModel extends AbstractTableModel
 {
   private final List<Car> cars = new ArrayList<>();
   
