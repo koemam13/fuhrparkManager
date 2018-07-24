@@ -241,6 +241,8 @@ public class MainGui extends javax.swing.JFrame
     Car c = model.getCar(index);
     
     DetailsDialog dlg = new DetailsDialog(this, true);
+    
+    dlg.setFileRoot(f);
     try
     {
       dlg.readFile(c);
@@ -250,7 +252,6 @@ public class MainGui extends javax.swing.JFrame
       java.util.logging.Logger.getLogger(MainGui.class.getName()).log(Level.SEVERE, null, ex);
     }
     dlg.setMinimumSize(new Dimension(900, 600));
-    dlg.setFileRoot(f);
     dlg.setVisible(true);
     
     if(!dlg.isPressedOK())

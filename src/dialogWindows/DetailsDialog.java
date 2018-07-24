@@ -526,7 +526,7 @@ public class DetailsDialog extends javax.swing.JDialog
       w.write(";");
       w.write(kostenstelle);
       w.write(";");
-      w.write(km);
+      w.write(String.valueOf(km));
       w.write(";");
       w.write(firstRegistration);
       w.write(";");
@@ -641,8 +641,12 @@ public class DetailsDialog extends javax.swing.JDialog
 
     public void readFile (Car c) throws Exception
   {
+    
+    
     File e = new File(f + File.separator + c.getName() + "_costs.dat");
     File d = new File(f + File.separator + c.getName() + "_details.dat");
+    
+    System.out.println(e.getAbsolutePath() + d.getAbsolutePath());
     if (e.exists() && d.exists())
     {
       try
@@ -706,7 +710,8 @@ public class DetailsDialog extends javax.swing.JDialog
   
   public void setFileRoot(File q)
   {
-    f = q;
+    System.out.println(q.getAbsolutePath());
+    f=q;
   }
 
 
