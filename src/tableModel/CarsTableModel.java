@@ -75,7 +75,8 @@ public class CarsTableModel extends AbstractTableModel
       case 8:
         return c.getNextService();
       case 9:
-        return c.getCost();
+        String x = String.format("%.2f \u20AC", c.getCost());
+        return x;
     }
     return null;
   }

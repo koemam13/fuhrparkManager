@@ -3,8 +3,6 @@ package dialogWindows;
 
 import data.Car;
 import data.Cost;
-import data.FileFormatException;
-import gui.MainGui;
 import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -45,6 +43,7 @@ public class DetailsDialog extends javax.swing.JDialog
   private String summer;
   private String winter;
   private String repairs;
+  private int kmbr;
   private boolean pressedOK;
 
 
@@ -431,6 +430,7 @@ public class DetailsDialog extends javax.swing.JDialog
 
     Cost c = dlg.getCost();
     model.add(c);
+    jtfAllTimeCost.setText(String.valueOf(model.getAllTimeCost()));
     jbDelete.setEnabled(true);
     jbEdit.setEnabled(true);
   }//GEN-LAST:event_jbAddActionPerformed
@@ -502,18 +502,13 @@ public class DetailsDialog extends javax.swing.JDialog
     nextInspection = jtfNInspection.getText();
     lastService = jtfLService.getText();
     nextService = jtfNService.getText();
-
-    List<Cost> costs = model.getCosts();
-
-    for (Cost c : costs)
-    {
-      allTimeCost += c.getCost();
-    }
-
-    tireDims = jtfTireDimensions.getText();
+    allTimeCost = model.getAllTimeCost();
+   tireDims = jtfTireDimensions.getText();
     summer = jtfSummer.getText();
     winter = jtfWinter.getText();
     repairs = jtaRepairs.getText();
+    
+    
 
 
     try
@@ -547,6 +542,9 @@ public class DetailsDialog extends javax.swing.JDialog
       w.write(winter);
       w.write(";");
       w.write(repairs);
+      w.write(";");
+      w.write(String.valueOf(kmbr));
+      
 
       w.close();
 
@@ -586,7 +584,7 @@ public class DetailsDialog extends javax.swing.JDialog
       w.write(";");
       w.write(kostenstelle);
       w.write(";");
-      w.write(km);
+      w.write(String.valueOf(km));
       w.write(";");
       w.write(firstRegistration);
       w.write(";");
@@ -607,6 +605,8 @@ public class DetailsDialog extends javax.swing.JDialog
       w.write(winter);
       w.write(";");
       w.write(repairs);
+      w.write(";");
+      w.write(String.valueOf(kmbr));
 
       w.close();
 
@@ -671,10 +671,21 @@ public class DetailsDialog extends javax.swing.JDialog
         jtfLService.setText(s[7]);
         jtfNService.setText(s[8]);
         jtfAllTimeCost.setText(s[9]);
+        
+        if(!s[10].isEmpty())
         jtfTireDimensions.setText(s[10]);
+        if(!s[11].isEmpty())
         jtfSummer.setText(s[11]);
+        if(!s[12].isEmpty())
         jtfWinter.setText(s[12]);
+        if(!s[13].isEmpty())
         jtaRepairs.setText(s[13]);
+        if(!s[14].isEmpty())
+        kmbr = Integer.parseInt(s[14]);
+        else
+          kmbr = Integer.parseInt(s[3]);
+       
+         
 
         u.close();
         r.close();
@@ -698,6 +709,7 @@ public class DetailsDialog extends javax.swing.JDialog
       jtfLService.setText(c.getLastService());
       jtfNService.setText(c.getNextService());
       jtfAllTimeCost.setText(String.valueOf(c.getCost()));
+      kmbr=c.getKm();
     }
 
   }
@@ -760,25 +772,19 @@ public class DetailsDialog extends javax.swing.JDialog
     /*
      * Create and display the dialog
      */
-    java.awt.EventQueue.invokeLater(new Runnable()
+    java.awt.EventQueue.invokeLater(() ->
     {
-      public void run ()
+      DetailsDialog dialog = new DetailsDialog(new javax.swing.JFrame(), true);
+      dialog.addWindowListener(new java.awt.event.WindowAdapter()
       {
-        
-
-
-        DetailsDialog dialog = new DetailsDialog(new javax.swing.JFrame(), true);
-        dialog.addWindowListener(new java.awt.event.WindowAdapter()
+        @Override
+        public void windowClosing (java.awt.event.WindowEvent e)
         {
-          @Override
-          public void windowClosing (java.awt.event.WindowEvent e)
-          {
-            System.exit(0);
-          }
-        });
-        
-        dialog.setVisible(true);
-      }
+          System.exit(0);
+        }
+      });
+      
+      dialog.setVisible(true);
     });
   }
 

@@ -8,28 +8,18 @@ package gui;
 import data.Car;
 import dialogWindows.AddDialog;
 import dialogWindows.DetailsDialog;
-import dialogWindows.EditDialog;
+import dialogWindows.showDetails;
 import java.awt.Dimension;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.nio.file.Path;
-import java.util.List;
 import java.util.logging.Level;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
-import org.apache.log4j.Logger;
 import tableModel.CarsTableModel;
 
 
@@ -39,13 +29,14 @@ import tableModel.CarsTableModel;
  */
 public class MainGui extends javax.swing.JFrame
 {
-  private final CarsTableModel model = new CarsTableModel();
-  
 
-  
+  private final CarsTableModel model = new CarsTableModel();
+
+
   static File f;
   static int rv;
-  
+
+
   /**
    * Creates new form MainGui
    */
@@ -54,7 +45,7 @@ public class MainGui extends javax.swing.JFrame
     initComponents();
     jtCars.setModel(model);
     setMinimumSize(new Dimension(1500, 200));
-   
+
   }
 
 
@@ -148,6 +139,13 @@ public class MainGui extends javax.swing.JFrame
     jPanel5.setLayout(new java.awt.GridBagLayout());
 
     jbDetails.setText("Details anzeigen");
+    jbDetails.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jbDetailsActionPerformed(evt);
+      }
+    });
     gridBagConstraints = new java.awt.GridBagConstraints();
     gridBagConstraints.gridx = 0;
     gridBagConstraints.gridy = 1;
@@ -192,56 +190,51 @@ public class MainGui extends javax.swing.JFrame
 
   private void jbAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbAddActionPerformed
   {//GEN-HEADEREND:event_jbAddActionPerformed
-    double baum = 300.0; 
-    
-    AddDialog dlg = new AddDialog(this,true);
-      dlg.setMinimumSize(new Dimension(400, 400));
-      dlg.setTitle("Eingabefenster");
-      dlg.setVisible(true);
-      if (!dlg.isPressedOK()) {
+
+
+    AddDialog dlg = new AddDialog(this, true);
+    dlg.setMinimumSize(new Dimension(400, 400));
+    dlg.setTitle("Eingabefenster");
+    dlg.setVisible(true);
+    if (!dlg.isPressedOK())
+    {
       return;
-      }
-      Car c = new Car(dlg.getName(), dlg.getId(), dlg.getKostenstelle(), dlg.getKm(), dlg.getFirstRegistration(), dlg.getlInspection(), dlg.getnInspection(), dlg.getlService(), dlg.getnService(), baum);
-      model.add(c);
+    }
+    Car c = new Car(dlg.getName(), dlg.getId(), dlg.getKostenstelle(), dlg.getKm(), dlg.getFirstRegistration(), dlg.getlInspection(), dlg.getnInspection(), dlg.getlService(), dlg.getnService(), 0);
+    model.add(c);
   }//GEN-LAST:event_jbAddActionPerformed
 
   private void jmSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmSaveActionPerformed
   {//GEN-HEADEREND:event_jmSaveActionPerformed
-    try (BufferedWriter w = new BufferedWriter(new FileWriter(f+File.separator+"save.dat"))) {
-        model.write(w);
-      } catch (Exception ex) {
-        ex.printStackTrace(System.err);
-        JOptionPane.showMessageDialog(this, "Datei kann nicht geschrieben werden",
-                                            "Fehler", 
-                                            JOptionPane.ERROR_MESSAGE);
-      }    // TODO add your handling code here:
+    save();
   }//GEN-LAST:event_jmSaveActionPerformed
 
   private void jbDelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDelActionPerformed
   {//GEN-HEADEREND:event_jbDelActionPerformed
-    int index =jtCars.getSelectedRow();
-    
+    int index = jtCars.getSelectedRow();
+
     model.remove(index);
   }//GEN-LAST:event_jbDelActionPerformed
 
-  public File getFile()
+
+  public File getFile ()
   {
     return f;
   }
-  
+
   private void jtCarsMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jtCarsMouseClicked
   {//GEN-HEADEREND:event_jtCarsMouseClicked
-    
+
   }//GEN-LAST:event_jtCarsMouseClicked
 
   private void jbMakeDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbMakeDetailsActionPerformed
   {//GEN-HEADEREND:event_jbMakeDetailsActionPerformed
     int index = jtCars.getSelectedRow();
-    
+
     Car c = model.getCar(index);
-    
+
     DetailsDialog dlg = new DetailsDialog(this, true);
-    
+
     dlg.setFileRoot(f);
     try
     {
@@ -253,31 +246,58 @@ public class MainGui extends javax.swing.JFrame
     }
     dlg.setMinimumSize(new Dimension(900, 600));
     dlg.setVisible(true);
-    
-    if(!dlg.isPressedOK())
+
+    if (!dlg.isPressedOK())
+    {
       return;
+    }
     Car c2 = dlg.getCar();
     model.set(index, c2);
   }//GEN-LAST:event_jbMakeDetailsActionPerformed
 
-  
-  private File openFile(){
-    File ez = null;
-          JFileChooser chooser = new JFileChooser();
-          chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-          
-       
-      FileNameExtensionFilter filter = new FileNameExtensionFilter(
-      "Bitte das Server Verzeichnis auswählen.", "csv");
-    chooser.setFileFilter(filter);
-     int showSaveDialog;
-     showSaveDialog = chooser.showSaveDialog(null);
+  private void jbDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDetailsActionPerformed
+  {//GEN-HEADEREND:event_jbDetailsActionPerformed
+    int index = jtCars.getSelectedRow();
     
+    Car c = model.getCar(index);
+    
+    showDetails dlg = new showDetails(this, true);
+    dlg.setMinimumSize(new Dimension(700, 500));
+    dlg.setRootFile(f);
+    try
+    {
+      dlg.setLabels(c);
+    }
+    catch (Exception ex)
+    {
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler aufgetreten...", JOptionPane.ERROR_MESSAGE);
+    }
+    dlg.setVisible(true);
+    
+    
+  }//GEN-LAST:event_jbDetailsActionPerformed
+
+
+  private File openFile ()
+  {
+    File ez = null;
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Bitte das Server Verzeichnis auswählen.", "csv");
+    chooser.setFileFilter(filter);
+    int showSaveDialog;
+    showSaveDialog = chooser.showSaveDialog(null);
+
     return ez = chooser.getSelectedFile();
   }
-  
-  private void readFile(BufferedReader r)
-  {try
+
+
+  private void readFile (BufferedReader r)
+  {
+    try
     {
       model.read(r);
     }
@@ -286,22 +306,19 @@ public class MainGui extends javax.swing.JFrame
       JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
       System.err.print(e);
       e.printStackTrace(System.out);
-      
+
     }
-    
+
   }
+
 
   /**
    * @param args the command line arguments
    */
   public static void main (String args[]) throws IOException, ClassNotFoundException
   {
-   
-    
-    
 
-    
-    
+
     /*
      * Set the Nimbus look and feel
      */
@@ -348,88 +365,85 @@ public class MainGui extends javax.swing.JFrame
       {
         MainGui main = new MainGui();
         main.setVisible(true);
-        
-             String s = null;
-    try
-    {
-      File test = new File(".");
-      
-      s = test.getAbsolutePath();
-      
-      s = s.replace(".", "");
-      
-      test.delete();
 
-    }
-    catch (Exception e)
-    {
-    }
-    
-    if(s!=null)
-    {
-      
-    File root = new File(s +File.separator+ "test.dat");
-    if(root.exists())
-    {
-      
-      try
-      {
-        String p = null;
+       
         
-        BufferedReader r = new BufferedReader(new FileReader(root));
-        
-        p = r.readLine();
-        
-        f = new File(p);
-        
-        
-        File x = new File(p + File.separator + "save.dat");
-        if (x.exists())
+
+         String s = null;
+        try
         {
-          
-          main.readFile(new BufferedReader(new FileReader(x)));
+          s = new File(".").getCanonicalPath();
         }
-      }
-      catch (IOException iOException)
-      {
-        JOptionPane.showMessageDialog(null, iOException.getCause(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
-      }
-    }
-    if(!root.exists())
-    {
-      try
-      {
-      
-        File x = main.openFile();
-        
-        File i = new File(s + File.separator + "test.dat");
-        
-        BufferedWriter w = new BufferedWriter(new FileWriter(i));
-        
-        
-        w.write(x.getAbsolutePath());
-        w.newLine();
-        w.flush();
-        
-        File p = new File(x.getAbsolutePath()+File.separator+"save.dat") ;
-        System.out.println(p.getAbsolutePath() + "     " + p.getName());
-        if(p.exists())
-          main.readFile(new BufferedReader(new FileReader(p)));
-      }
-      catch (IOException iOException)
-      {
-      }
-    }
-    }
-        
-        
+        catch (IOException ex)
+        {
+          JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+        }
+;
+
+        if (s != null)
+        {
+
+          File root = new File(s + File.separator + "test.dat");
+          if (root.exists())
+          {
+
+            try
+            {
+              String p = null;
+
+              BufferedReader r = new BufferedReader(new FileReader(root));
+
+              p = r.readLine();
+
+              f = new File(p);
+
+
+              File x = new File(p + File.separator + "save.dat");
+              if (x.exists())
+              {
+
+                main.readFile(new BufferedReader(new FileReader(x)));
+              }
+            }
+            catch (IOException iOException)
+            {
+              JOptionPane.showMessageDialog(null, iOException.getCause(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+            }
+          }
+          if (!root.exists())
+          {
+            try
+            {
+
+              File x = main.openFile();
+
+              File i = new File(s + File.separator + "test.dat");
+
+              BufferedWriter w = new BufferedWriter(new FileWriter(i));
+
+
+              w.write(x.getAbsolutePath());
+              w.newLine();
+              w.flush();
+
+              File p = new File(x.getAbsolutePath() + File.separator + "save.dat");
+              System.out.println(p.getAbsolutePath() + "     " + p.getName());
+              if (p.exists())
+              {
+                main.readFile(new BufferedReader(new FileReader(p)));
+              }
+            }
+            catch (IOException iOException)
+            {
+            }
+          } 
+        }
+
+
       }
     });
-    
 
-    
-    
-    
+
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -449,4 +463,18 @@ public class MainGui extends javax.swing.JFrame
   private javax.swing.JTable jtCars;
   // End of variables declaration//GEN-END:variables
 
+  private void save()
+  {
+    try (BufferedWriter w = new BufferedWriter(new FileWriter(f + File.separator + "save.dat")))
+    {
+      model.write(w);
+    }
+    catch (Exception ex)
+    {
+      ex.printStackTrace(System.err);
+      JOptionPane.showMessageDialog(this, "Datei kann nicht geschrieben werden",
+                                    "Fehler",
+                                    JOptionPane.ERROR_MESSAGE);
+    }    // TODO add your handling code here:
+  }
 }

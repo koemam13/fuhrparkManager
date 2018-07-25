@@ -7,7 +7,6 @@
 package dialogWindows;
 
 import data.Car;
-import java.awt.Dimension;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
@@ -37,7 +36,9 @@ public class EditDialog extends javax.swing.JDialog {
     return firstRegistration;
   }
 
-    /** Creates new form AddDialog */
+    /** Creates new form AddDialog
+   * @param parent
+   * @param modal */
     public EditDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         setLocationRelativeTo(parent);
@@ -364,17 +365,16 @@ public class EditDialog extends javax.swing.JDialog {
         //</editor-fold>
 
         /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                EditDialog dialog = new EditDialog(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
+        java.awt.EventQueue.invokeLater(() ->
+        {
+          EditDialog dialog = new EditDialog(new javax.swing.JFrame(), true);
+          dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent e) {
+              System.exit(0);
             }
+          });
+          dialog.setVisible(true);
         });
     }
 

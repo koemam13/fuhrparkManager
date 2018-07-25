@@ -20,6 +20,8 @@ private double cost;
 private boolean OKPressed;
   /**
    * Creates new form CostDialog
+   * @param parent
+   * @param modal
    */
   public EditCostDialog (java.awt.Frame parent, boolean modal)
   {
@@ -114,7 +116,7 @@ private boolean OKPressed;
     {
       cost = Double.parseDouble(s);
     }
-    catch (Exception e)
+    catch (NumberFormatException e)
     {
       JOptionPane.showMessageDialog(this, "Bitte eine Zahl eingeben", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }
@@ -195,21 +197,18 @@ private boolean OKPressed;
     /*
      * Create and display the dialog
      */
-    java.awt.EventQueue.invokeLater(new Runnable()
+    java.awt.EventQueue.invokeLater(() ->
     {
-      public void run ()
+      EditCostDialog dialog = new EditCostDialog(new javax.swing.JFrame(), true);
+      dialog.addWindowListener(new java.awt.event.WindowAdapter()
       {
-        EditCostDialog dialog = new EditCostDialog(new javax.swing.JFrame(), true);
-        dialog.addWindowListener(new java.awt.event.WindowAdapter()
+        @Override
+        public void windowClosing (java.awt.event.WindowEvent e)
         {
-          @Override
-          public void windowClosing (java.awt.event.WindowEvent e)
-          {
-            System.exit(0);
-          }
-        });
-        dialog.setVisible(true);
-      }
+          System.exit(0);
+        }
+      });
+      dialog.setVisible(true);
     });
   }
 

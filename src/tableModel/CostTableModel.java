@@ -5,7 +5,6 @@
  */
 package tableModel;
 
-import data.Car;
 import data.Cost;
 import data.FileFormatException;
 import java.io.BufferedReader;
@@ -48,7 +47,10 @@ public class CostTableModel extends AbstractTableModel
     final Cost c = costs.get(rowIndex);
     switch ( columnIndex) {
       case 0: return c.getDate();
-      case 1: return c.getCost();
+      case 1: 
+        String x;
+        x = String.format("%.2f \u20AC", c.getCost());
+        return x;
       default: throw new RuntimeException("wrong column index " + columnIndex);
     }
   }
@@ -64,6 +66,16 @@ public class CostTableModel extends AbstractTableModel
   public List<Cost> getCosts ()
   {
     return costs;
+  }
+  
+  public double getAllTimeCost()
+  {
+    double x = 0;
+    for(Cost c : costs)
+      x+= c.getCost();
+    String s = String.format("%.2f", x);
+    System.out.println(s);
+    return Double.parseDouble(s.replace(",", "."));
   }
 
 
