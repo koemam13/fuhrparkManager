@@ -21,10 +21,12 @@ import java.awt.print.PrinterJob;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -204,6 +206,13 @@ public class MainGui extends javax.swing.JFrame
     jMenu1.add(jmSave);
 
     jmRefresh.setText("Aktualisieren");
+    jmRefresh.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jmRefreshActionPerformed(evt);
+      }
+    });
     jMenu1.add(jmRefresh);
 
     jMenuBar1.add(jMenu1);
@@ -215,7 +224,6 @@ public class MainGui extends javax.swing.JFrame
 
   private void jbAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbAddActionPerformed
   {//GEN-HEADEREND:event_jbAddActionPerformed
-
 
     AddDialog dlg = new AddDialog(this, true);
     dlg.setMinimumSize(new Dimension(400, 400));
@@ -229,23 +237,18 @@ public class MainGui extends javax.swing.JFrame
     model.add(c);
   }//GEN-LAST:event_jbAddActionPerformed
 
-  private void jmSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmSaveActionPerformed
-  {//GEN-HEADEREND:event_jmSaveActionPerformed
-    save();
-  }//GEN-LAST:event_jmSaveActionPerformed
-
   private void jbDelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDelActionPerformed
   {//GEN-HEADEREND:event_jbDelActionPerformed
     int index = jtCars.getSelectedRow();
 
+    if (index <= 0)
+    {
+      JOptionPane.showMessageDialog(this, "Keine Zeile ausgewählt", "Fehler aufgetreten ...", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
     model.remove(index);
   }//GEN-LAST:event_jbDelActionPerformed
-
-
-  public File getFile ()
-  {
-    return f;
-  }
 
   private void jtCarsMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jtCarsMouseClicked
   {//GEN-HEADEREND:event_jtCarsMouseClicked
@@ -255,6 +258,12 @@ public class MainGui extends javax.swing.JFrame
   private void jbMakeDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbMakeDetailsActionPerformed
   {//GEN-HEADEREND:event_jbMakeDetailsActionPerformed
     int index = jtCars.getSelectedRow();
+
+    if (index <= 0)
+    {
+      JOptionPane.showMessageDialog(this, "Keine Zeile ausgewählt", "Fehler aufgetreten ...", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
 
     Car c = model.getCar(index);
 
@@ -283,9 +292,15 @@ public class MainGui extends javax.swing.JFrame
   private void jbDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDetailsActionPerformed
   {//GEN-HEADEREND:event_jbDetailsActionPerformed
     int index = jtCars.getSelectedRow();
-    
+
+    if (index <= 0)
+    {
+      JOptionPane.showMessageDialog(this, "Keine Zeile ausgewählt", "Fehler aufgetreten ...", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
     Car c = model.getCar(index);
-    
+
     showDetails dlg = new showDetails(this, true);
     dlg.setMinimumSize(new Dimension(700, 500));
     dlg.setRootFile(f);
@@ -298,16 +313,22 @@ public class MainGui extends javax.swing.JFrame
       JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler aufgetreten...", JOptionPane.ERROR_MESSAGE);
     }
     dlg.setVisible(true);
-    
-    
+
+
   }//GEN-LAST:event_jbDetailsActionPerformed
 
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
   {//GEN-HEADEREND:event_jButton1ActionPerformed
- int index = jtCars.getSelectedRow();
-    
+    int index = jtCars.getSelectedRow();
+
+    if (index <= 0)
+    {
+      JOptionPane.showMessageDialog(this, "Keine Zeile ausgewählt", "Fehler aufgetreten ...", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
+
     Car c = model.getCar(index);
-    
+
     PrintDetails dlg = new PrintDetails(this, true);
     dlg.setMinimumSize(new Dimension(700, 500));
     dlg.setRootFile(f);
@@ -319,62 +340,45 @@ public class MainGui extends javax.swing.JFrame
     {
       JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler aufgetreten...", JOptionPane.ERROR_MESSAGE);
     }
-try
-            {
-              PrinterJob job = PrinterJob.getPrinterJob();
-              PageFormat preformat = job.defaultPage();
-              preformat.setOrientation(PageFormat.PORTRAIT);
-              PageFormat postformat = job.pageDialog(preformat);
-              
-              if(preformat != postformat)
-              {
-                job.setPrintable(new Printer(dlg.getComponent(0)), preformat);
-                if(job.printDialog())
-                {
-                  job.print();
-                }
-              }
-              
-            }
-catch(Exception ex)
-        {
-          
-        }
-      }//GEN-LAST:event_jButton1ActionPerformed
-
-
-  private File openFile ()
-  {
-    File ez = null;
-    JFileChooser chooser = new JFileChooser();
-    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-
-
-    FileNameExtensionFilter filter = new FileNameExtensionFilter(
-            "Bitte das Server Verzeichnis auswählen.", "csv");
-    chooser.setFileFilter(filter);
-    int showSaveDialog;
-    showSaveDialog = chooser.showSaveDialog(null);
-
-    return ez = chooser.getSelectedFile();
-  }
-
-
-  private void readFile (BufferedReader r)
-  {
     try
     {
-      model.read(r);
+      PrinterJob job = PrinterJob.getPrinterJob();
+      PageFormat preformat = job.defaultPage();
+      preformat.setOrientation(PageFormat.PORTRAIT);
+      PageFormat postformat = job.pageDialog(preformat);
+
+      if (preformat != postformat)
+      {
+        job.setPrintable(new Printer(dlg.getComponent(0)), postformat);
+        if (job.printDialog())
+        {
+          job.print();
+        }
+      }
+
     }
-    catch (Exception e)
+    catch (Exception ex)
     {
-      JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
-      System.err.print(e);
-      e.printStackTrace(System.out);
 
     }
+   }//GEN-LAST:event_jButton1ActionPerformed
 
-  }
+  private void jmSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmSaveActionPerformed
+  {//GEN-HEADEREND:event_jmSaveActionPerformed
+    save();
+  }//GEN-LAST:event_jmSaveActionPerformed
+
+  private void jmRefreshActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmRefreshActionPerformed
+  {//GEN-HEADEREND:event_jmRefreshActionPerformed
+    try
+    {
+      readFile(new BufferedReader(new FileReader(new File(f + File.separator + "save.dat"))));
+    }
+    catch (FileNotFoundException ex)
+    {
+      JOptionPane.showMessageDialog(this, "Fehler konnet Dateien nicht einlesen", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+    }
+  }//GEN-LAST:event_jmRefreshActionPerformed
 
 
   /**
@@ -431,10 +435,7 @@ catch(Exception ex)
         MainGui main = new MainGui();
         main.setVisible(true);
 
-       
-        
-
-         String s = null;
+        String s = null;
         try
         {
           s = new File(".").getCanonicalPath();
@@ -443,7 +444,6 @@ catch(Exception ex)
         {
           JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
         }
-;
 
         if (s != null)
         {
@@ -482,7 +482,7 @@ catch(Exception ex)
 
               File x = main.openFile();
 
-              File i = new File(s + File.separator + "test.dat");
+              File i = new File(s + File.separator + "rootPath.dat");
 
               BufferedWriter w = new BufferedWriter(new FileWriter(i));
 
@@ -501,7 +501,7 @@ catch(Exception ex)
             catch (IOException iOException)
             {
             }
-          } 
+          }
         }
 
 
@@ -530,7 +530,7 @@ catch(Exception ex)
   private javax.swing.JTable jtCars;
   // End of variables declaration//GEN-END:variables
 
-  private void save()
+  private void save ()
   {
     try (BufferedWriter w = new BufferedWriter(new FileWriter(f + File.separator + "save.dat")))
     {
@@ -544,44 +544,94 @@ catch(Exception ex)
                                     JOptionPane.ERROR_MESSAGE);
     }    // TODO add your handling code here:
   }
-  
-  
-  public static class Printer implements Printable {
+
+
+  private File openFile ()
+  {
+    File ez = null;
+    JFileChooser chooser = new JFileChooser();
+    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+
+    FileNameExtensionFilter filter = new FileNameExtensionFilter(
+            "Bitte das Installations Verzeichnis auswählen.", "csv");
+    chooser.setFileFilter(filter);
+    int showSaveDialog;
+    showSaveDialog = chooser.showSaveDialog(null);
+
+    return ez = chooser.getSelectedFile();
+  }
+
+
+  private void readFile (BufferedReader r)
+  {
+    try
+    {
+      model.read(r);
+    }
+    catch (Exception e)
+    {
+      JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+      System.err.print(e);
+      e.printStackTrace(System.out);
+
+    }
+
+  }
+
+
+  public static class Printer implements Printable
+  {
+
     final Component comp;
 
-    public Printer(Component comp){
-        this.comp = comp;
+
+    public Printer (Component comp)
+    {
+      this.comp = comp;
     }
+
 
     @Override
-    public int print(Graphics g, PageFormat format, int page_index) 
-            throws PrinterException {
-        if (page_index > 0) {
-            return Printable.NO_SUCH_PAGE;
-        }
+    public int print (Graphics g, PageFormat format, int page_index)
+            throws PrinterException
+    {
+      if (page_index > 0)
+      {
+        return Printable.NO_SUCH_PAGE;
+      }
 
-        // get the bounds of the component
-        Dimension dim = comp.getSize();
-        double cHeight = dim.getHeight();
-        double cWidth = dim.getWidth();
+      // get the bounds of the component
+      Dimension dim = comp.getSize();
+      double cHeight = dim.getHeight();
+      double cWidth = dim.getWidth();
 
-        // get the bounds of the printable area
-        double pHeight = format.getImageableHeight();
-        double pWidth = format.getImageableWidth();
+      // get the bounds of the printable area
+      double pHeight = format.getImageableHeight();
+      double pWidth = format.getImageableWidth();
 
-        double pXStart = format.getImageableX();
-        double pYStart = format.getImageableY();
+      double pXStart = format.getImageableX();
+      double pYStart = format.getImageableY();
 
-        double xRatio = pWidth / cWidth;
-        double yRatio = pHeight / cHeight;
+      double xRatio = pWidth / cWidth;
+      double yRatio = pHeight / cHeight;
 
 
-        Graphics2D g2 = (Graphics2D) g;
-        g2.translate(pXStart, pYStart);
+      Graphics2D g2 = (Graphics2D) g;
+      g2.translate(pXStart, pYStart);
+
+
+      if (format.getOrientation() == PageFormat.PORTRAIT)
+      {
         g2.scale(xRatio, xRatio);
-        comp.paint(g2);
+      }
+      if (format.getOrientation() == PageFormat.LANDSCAPE || format.getOrientation() == PageFormat.REVERSE_LANDSCAPE)
+      {
+        g2.scale(yRatio, yRatio);
+      }
+      comp.paint(g);
 
-        return Printable.PAGE_EXISTS;
+      return Printable.PAGE_EXISTS;
     }
-}
+  }
 }

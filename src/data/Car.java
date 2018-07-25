@@ -15,6 +15,7 @@ import java.io.Writer;
  */
 public class Car
 {
+
   private final String name;
   private final String id;
   private final String kostenstelle;
@@ -100,8 +101,9 @@ public class Car
   {
     return cost;
   }
-  
-  public void write (Writer w) throws IOException 
+
+
+  public void write (Writer w) throws IOException
   {
     w.write(name);
     w.write(",");
@@ -123,7 +125,7 @@ public class Car
     w.write(",");
     w.write(String.valueOf(cost));
     w.flush();
-    }
-  
- 
+  }
+
+
 }

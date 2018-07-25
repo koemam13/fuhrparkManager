@@ -21,11 +21,16 @@ import javax.swing.table.AbstractTableModel;
  */
 public class CarsTableModel extends AbstractTableModel
 {
+
   private final List<Car> cars = new ArrayList<>();
-  
-  private static final String [] colNames = {"Fahrzeug","Kennzeichen","Kostenstelle","Kilometer","Erstzulassung",
-                                             "Lletzte §57a Begutachtung", "Nächste Begutachtung","Letzter Service",
-                                             "Nächster Service", "Kosten"};
+
+  private static final String[] colNames =
+  {
+    "Fahrzeug", "Kennzeichen", "Kostenstelle", "Kilometer", "Erstzulassung",
+    "Lletzte §57a Begutachtung", "Nächste Begutachtung", "Letzter Service",
+    "Nächster Service", "Kosten"
+  };
+
 
   @Override
   public int getRowCount ()
@@ -46,17 +51,15 @@ public class CarsTableModel extends AbstractTableModel
   {
     return colNames[columnIndex];
   }
-  
-  
 
 
   @Override
   public Object getValueAt (int rowIndex, int columnIndex)
   {
     final Car c = cars.get(rowIndex);
-    switch(columnIndex)
+    switch (columnIndex)
     {
-      case 0: 
+      case 0:
         return c.getName();
       case 1:
         return c.getId();
@@ -80,71 +83,81 @@ public class CarsTableModel extends AbstractTableModel
     }
     return null;
   }
-  
+
+
   public boolean add (Car c)
   {
     boolean rv = cars.add(c);
-    fireTableRowsInserted(cars.size()-1, cars.size()-1);
+    fireTableRowsInserted(cars.size() - 1, cars.size() - 1);
     return rv;
   }
-  
-  public boolean remove(Car c)
+
+
+  public boolean remove (Car c)
   {
     int index = cars.indexOf(c);
     boolean rv = cars.remove(c);
     fireTableRowsDeleted(index, index);
     return rv;
-    
+
   }
-  
+
+
   public Car remove (int index)
   {
     Car c = cars.remove(index);
     fireTableRowsDeleted(index, index);
     return c;
-    
+
   }
-  
+
+
   public Car getCar (int index)
   {
     Car c = cars.get(index);
     return c;
   }
-  
+
+
   public void write (BufferedWriter w) throws IOException
   {
-    for (Car c : cars) {
+    for (Car c : cars)
+    {
       c.write(w);
       w.newLine();
     }
   }
-  
-    public void set (int index, Car c)
+
+
+  public void set (int index, Car c)
   {
     cars.set(index, c);
     fireTableRowsUpdated(index, index);
   }
 
-  
+
   public void read (BufferedReader r) throws FileFormatException, IOException
   {
     cars.clear();
     fireTableDataChanged();
-    
-    while (r.ready()) {
+
+    while (r.ready())
+    {
       String line = r.readLine().trim();
-      
+
       String s[] = line.split(",");
-      
-      if(s.length < 9)
+
+      if (s.length < 9)
+      {
         throw new FileFormatException("Falsches format");
-      
+      }
+
       System.out.println(java.util.Arrays.toString(s));
-      
-      cars.add(new Car(s[0], s[1],s[2],Integer.parseInt(s[3]),s[4],s[5],s[6],s[7],s[8],Double.parseDouble(s[9])));
+
+      cars.add(new Car(s[0], s[1], s[2], Integer.parseInt(s[3]), s[4], s[5], s[6], s[7], s[8], Double.parseDouble(s[9])));
       fireTableDataChanged();
-      
+
     }
   }
-  
+
 }

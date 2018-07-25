@@ -13,8 +13,9 @@ import java.io.IOException;
  *
  * @author imperatus
  */
-public class Cost 
+public class Cost
 {
+
   private final String date;
   private final double cost;
 
@@ -44,6 +45,6 @@ public class Cost
     x.write(";");
     x.write(String.valueOf(cost));
   }
-  
-  
+
+
 }

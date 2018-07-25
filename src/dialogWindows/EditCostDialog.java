@@ -15,11 +15,15 @@ import javax.swing.JOptionPane;
  */
 public class EditCostDialog extends javax.swing.JDialog
 {
-private String month;
-private double cost;
-private boolean OKPressed;
+
+  private String month;
+  private double cost;
+  private boolean OKPressed;
+
+
   /**
    * Creates new form CostDialog
+   *
    * @param parent
    * @param modal
    */
@@ -108,7 +112,7 @@ private boolean OKPressed;
   {//GEN-HEADEREND:event_jbOKActionPerformed
     month = jtfMonth.getText();
     String s = jtfCost.getText();
-    if(month.isEmpty() || s.isEmpty())
+    if (month.isEmpty() || s.isEmpty())
     {
       JOptionPane.showMessageDialog(this, "Bitte Datum o. Kosten eingeben.", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }
@@ -120,7 +124,7 @@ private boolean OKPressed;
     {
       JOptionPane.showMessageDialog(this, "Bitte eine Zahl eingeben", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }
-    
+
     OKPressed = true;
     dispose();
   }//GEN-LAST:event_jbOKActionPerformed
@@ -132,9 +136,9 @@ private boolean OKPressed;
   }//GEN-LAST:event_jbCancelActionPerformed
 
 
-  public Cost getCost()
+  public Cost getCost ()
   {
-    return new Cost(month,cost);
+    return new Cost(month, cost);
   }
 
 
@@ -143,13 +147,13 @@ private boolean OKPressed;
     return OKPressed;
   }
 
-  public void setCost(Cost c)
+
+  public void setCost (Cost c)
   {
     jtfCost.setText(String.valueOf(c.getCost()));
     jtfMonth.setText(c.getDate());
   }
-  
-  
+
 
   /**
    * @param args the command line arguments

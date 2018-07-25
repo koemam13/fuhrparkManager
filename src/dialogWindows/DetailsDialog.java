@@ -18,7 +18,6 @@ import tableModel.CostTableModel;
  * To change this license header, choose License Headers in Project Properties. To change this template file, choose
  * Tools | Templates and open the template in the editor.
  */
-
 /**
  *
  * @author imperatus
@@ -503,12 +502,10 @@ public class DetailsDialog extends javax.swing.JDialog
     lastService = jtfLService.getText();
     nextService = jtfNService.getText();
     allTimeCost = model.getAllTimeCost();
-   tireDims = jtfTireDimensions.getText();
+    tireDims = jtfTireDimensions.getText();
     summer = jtfSummer.getText();
     winter = jtfWinter.getText();
     repairs = jtaRepairs.getText();
-    
-    
 
 
     try
@@ -544,7 +541,7 @@ public class DetailsDialog extends javax.swing.JDialog
       w.write(repairs);
       w.write(";");
       w.write(String.valueOf(kmbr));
-      
+
 
       w.close();
 
@@ -639,13 +636,13 @@ public class DetailsDialog extends javax.swing.JDialog
   }
 
 
-    public void readFile (Car c) throws Exception
+  public void readFile (Car c) throws Exception
   {
-    
-    
+
+
     File e = new File(f + File.separator + c.getName() + "_costs.dat");
     File d = new File(f + File.separator + c.getName() + "_details.dat");
-    
+
     System.out.println(e.getAbsolutePath() + d.getAbsolutePath());
     if (e.exists() && d.exists())
     {
@@ -671,21 +668,32 @@ public class DetailsDialog extends javax.swing.JDialog
         jtfLService.setText(s[7]);
         jtfNService.setText(s[8]);
         jtfAllTimeCost.setText(s[9]);
-        
-        if(!s[10].isEmpty())
-        jtfTireDimensions.setText(s[10]);
-        if(!s[11].isEmpty())
-        jtfSummer.setText(s[11]);
-        if(!s[12].isEmpty())
-        jtfWinter.setText(s[12]);
-        if(!s[13].isEmpty())
-        jtaRepairs.setText(s[13]);
-        if(!s[14].isEmpty())
-        kmbr = Integer.parseInt(s[14]);
+
+        if (!s[10].isEmpty())
+        {
+          jtfTireDimensions.setText(s[10]);
+        }
+        if (!s[11].isEmpty())
+        {
+          jtfSummer.setText(s[11]);
+        }
+        if (!s[12].isEmpty())
+        {
+          jtfWinter.setText(s[12]);
+        }
+        if (!s[13].isEmpty())
+        {
+          jtaRepairs.setText(s[13]);
+        }
+        if (!s[14].isEmpty())
+        {
+          kmbr = Integer.parseInt(s[14]);
+        }
         else
+        {
           kmbr = Integer.parseInt(s[3]);
-       
-         
+        }
+
 
         u.close();
         r.close();
@@ -709,7 +717,7 @@ public class DetailsDialog extends javax.swing.JDialog
       jtfLService.setText(c.getLastService());
       jtfNService.setText(c.getNextService());
       jtfAllTimeCost.setText(String.valueOf(c.getCost()));
-      kmbr=c.getKm();
+      kmbr = c.getKm();
     }
 
   }
@@ -719,11 +727,12 @@ public class DetailsDialog extends javax.swing.JDialog
   {
     return pressedOK;
   }
-  
-  public void setFileRoot(File q)
+
+
+  public void setFileRoot (File q)
   {
     System.out.println(q.getAbsolutePath());
-    f=q;
+    f = q;
   }
 
 
@@ -783,7 +792,7 @@ public class DetailsDialog extends javax.swing.JDialog
           System.exit(0);
         }
       });
-      
+
       dialog.setVisible(true);
     });
   }

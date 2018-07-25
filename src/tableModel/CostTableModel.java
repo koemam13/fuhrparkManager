@@ -15,16 +15,18 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 
-
-
 /**
  *
  * @author imperatus
  */
 public class CostTableModel extends AbstractTableModel
 {
+
   private final List<Cost> costs = new ArrayList<>();
-  private final String[] colNames = {"Monat/Jahr","Kosten"};
+  private final String[] colNames =
+  {
+    "Monat/Jahr", "Kosten"
+  };
 
 
   @Override
@@ -41,24 +43,28 @@ public class CostTableModel extends AbstractTableModel
   }
 
 
-@Override
+  @Override
   public Object getValueAt (int rowIndex, int columnIndex)
   {
     final Cost c = costs.get(rowIndex);
-    switch ( columnIndex) {
-      case 0: return c.getDate();
-      case 1: 
+    switch (columnIndex)
+    {
+      case 0:
+        return c.getDate();
+      case 1:
         String x;
         x = String.format("%.2f \u20AC", c.getCost());
         return x;
-      default: throw new RuntimeException("wrong column index " + columnIndex);
+      default:
+        throw new RuntimeException("wrong column index " + columnIndex);
     }
   }
-  
-   public boolean add (Cost c)
+
+
+  public boolean add (Cost c)
   {
-    boolean rv =costs.add(c);
-    fireTableRowsInserted(costs.size()-1, costs.size()-1);
+    boolean rv = costs.add(c);
+    fireTableRowsInserted(costs.size() - 1, costs.size() - 1);
     return rv;
   }
 
@@ -67,12 +73,15 @@ public class CostTableModel extends AbstractTableModel
   {
     return costs;
   }
-  
-  public double getAllTimeCost()
+
+
+  public double getAllTimeCost ()
   {
     double x = 0;
-    for(Cost c : costs)
-      x+= c.getCost();
+    for (Cost c : costs)
+    {
+      x += c.getCost();
+    }
     String s = String.format("%.2f", x);
     System.out.println(s);
     return Double.parseDouble(s.replace(",", "."));
@@ -84,12 +93,14 @@ public class CostTableModel extends AbstractTableModel
   {
     return colNames[column];
   }
-   
-public Cost getCost (int index)
+
+
+  public Cost getCost (int index)
   {
     Cost c = costs.get(index);
     return c;
   }
+
 
   public boolean remove (Cost c)
   {
@@ -106,7 +117,8 @@ public Cost getCost (int index)
     fireTableRowsDeleted(index, index);
     return c;
   }
-  
+
+
   public void set (int index, Cost c)
   {
     costs.set(index, c);
@@ -116,33 +128,34 @@ public Cost getCost (int index)
 
   public void write (BufferedWriter x) throws IOException
   {
-    for(Cost c:costs)
+    for (Cost c : costs)
     {
       c.write(x);
       x.newLine();
     }
   }
-  
-  
+
+
   public void read (BufferedReader r) throws FileFormatException, IOException
   {
     costs.clear();
     fireTableDataChanged();
-    
-    while (r.ready()) {
+
+    while (r.ready())
+    {
       String line = r.readLine().trim();
-      
+
       String s[] = line.split(";");
-      
-      if(s.length < 2)
+
+      if (s.length < 2)
+      {
         throw new FileFormatException("Falsches format");
-      
-      costs.add(new Cost(s[0],Double.parseDouble(s[1])));
+      }
+
+      costs.add(new Cost(s[0], Double.parseDouble(s[1])));
       fireTableDataChanged();
-      
+
     }
   }
 
 }
-
-

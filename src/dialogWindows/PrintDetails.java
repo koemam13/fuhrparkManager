@@ -26,15 +26,15 @@ import java.io.FileReader;
  */
 public class PrintDetails extends javax.swing.JDialog implements Printable
 {
+
   private static File f;
   private boolean print = false;
   private static PrintDetails dialog;
 
 
-  
-
   /**
    * Creates new form showDetails
+   *
    * @param parent
    * @param modal
    */
@@ -331,38 +331,35 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
   }// </editor-fold>//GEN-END:initComponents
 
 
-  
-
-  
-  
-  public void setRootFile(File x)
+  public void setRootFile (File x)
   {
     f = x;
 
   }
-  
-  public void setLabels(Car c) throws Exception
+
+
+  public void setLabels (Car c) throws Exception
   {
-    File x = new File(f+File.separator+c.getName()+"_details.dat");
-    
+    File x = new File(f + File.separator + c.getName() + "_details.dat");
+
     System.out.println(x.getAbsolutePath());
-    
-    if(x.exists())
+
+    if (x.exists())
     {
       try
       {
         BufferedReader r = new BufferedReader(new FileReader(x));
-        
+
         String line = r.readLine().trim();
-        
-        String [] s = line.split(";");
-        
+
+        String[] s = line.split(";");
+
         System.out.println(java.util.Arrays.toString(s));
-        
+
         jno.setText(s[0]);
         jido.setText(s[1]);
         jko.setText(s[2]);
-        jkmo.setText(s[3]+"km");
+        jkmo.setText(s[3] + "km");
         jfro.setText(s[4]);
         jlio.setText(s[5]);
         jnio.setText(s[6]);
@@ -373,7 +370,7 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
         jtso.setText(s[11]);
         jtwo.setText(s[12]);
         jrepo.setText(s[13]);
-        jkpkmo.setText(String.format("%.2f \u20AC",Double.parseDouble(s[9])/(Integer.parseInt(s[3])-Integer.parseInt(s[14]))));
+        jkpkmo.setText(String.format("%.2f \u20AC", Double.parseDouble(s[9]) / (Integer.parseInt(s[3]) - Integer.parseInt(s[14]))));
         jkbro.setText(s[14]);
       }
       catch (Exception e)
@@ -384,21 +381,18 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
     else
     {
       jno.setText(c.getName());
-        jido.setText(c.getId());
-        jko.setText(c.getKostenstelle());
-        jkmo.setText(String.valueOf(c.getKm())+" km");
-        jfro.setText(c.getFirstRegistration());
-        jlio.setText(c.getLastInspection());
-        jnio.setText(c.getNextInspection());
-        jlso.setText(c.getLastService());
-        jnso.setText(c.getNextService());
-        jatco.setText(String.valueOf(c.getCost()) + "\u20AC");
+      jido.setText(c.getId());
+      jko.setText(c.getKostenstelle());
+      jkmo.setText(String.valueOf(c.getKm()) + " km");
+      jfro.setText(c.getFirstRegistration());
+      jlio.setText(c.getLastInspection());
+      jnio.setText(c.getNextInspection());
+      jlso.setText(c.getLastService());
+      jnso.setText(c.getNextService());
+      jatco.setText(String.valueOf(c.getCost()) + "\u20AC");
     }
   }
-  
-  
-  
-  
+
 
   /**
    * @param args the command line arguments
@@ -449,7 +443,7 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
     java.awt.EventQueue.invokeLater(() ->
     {
       dialog = new PrintDetails(new javax.swing.JFrame(), true);
-      
+
       dialog.addWindowListener(new java.awt.event.WindowAdapter()
       {
         @Override
@@ -458,11 +452,10 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
           System.exit(0);
         }
       });
-      
+
       dialog.setVisible(true);
-      
-      
-      
+
+
     });
   }
 
@@ -505,65 +498,82 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
   @Override
   public int print (Graphics g, PageFormat pf, int pageIndex) throws PrinterException
   {
-    if (pageIndex > 0) { /* We have only one page, and 'page' is zero-based */
-            return NO_SUCH_PAGE;
-        }
- 
-        /* User (0,0) is typically outside the imageable area, so we must
-         * translate by the X and Y values in the PageFormat to avoid clipping
-         */
-        Graphics2D g2d = (Graphics2D)g;
-   
-        g2d.translate(pf.getImageableX(), pf.getImageableY());
- 
-        /* Now print the window and its visible contents */
-        PrintDetails dlg = new PrintDetails(null, true);
-        dlg.revalidate();
-        dlg.repaint();
-                dlg.printAll(g);
- 
-        /* tell the caller that this page is part of the printed document */
-        return PAGE_EXISTS;
- 
-    	
-  }
-  public static class Printer implements Printable {
-    final Component comp;
-
-    public Printer(Component comp){
-        this.comp = comp;
+    if (pageIndex > 0)
+    {
+      /*
+       * We have only one page, and 'page' is zero-based
+       */
+      return NO_SUCH_PAGE;
     }
 
+    /*
+     * User (0,0) is typically outside the imageable area, so we must translate by the X and Y values in the PageFormat
+     * to avoid clipping
+     */
+    Graphics2D g2d = (Graphics2D) g;
+
+    g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+    /*
+     * Now print the window and its visible contents
+     */
+    PrintDetails dlg = new PrintDetails(null, true);
+    dlg.revalidate();
+    dlg.repaint();
+    dlg.printAll(g);
+
+    /*
+     * tell the caller that this page is part of the printed document
+     */
+    return PAGE_EXISTS;
+
+
+  }
+
+
+  public static class Printer implements Printable
+  {
+
+    final Component comp;
+
+
+    public Printer (Component comp)
+    {
+      this.comp = comp;
+    }
+
+
     @Override
-    public int print(Graphics g, PageFormat format, int page_index) 
-            throws PrinterException {
-        if (page_index > 0) {
-            return Printable.NO_SUCH_PAGE;
-        }
+    public int print (Graphics g, PageFormat format, int page_index)
+            throws PrinterException
+    {
+      if (page_index > 0)
+      {
+        return Printable.NO_SUCH_PAGE;
+      }
 
-        // get the bounds of the component
-        Dimension dim = comp.getSize();
-        double cHeight = dim.getHeight();
-        double cWidth = dim.getWidth();
+      // get the bounds of the component
+      Dimension dim = comp.getSize();
+      double cHeight = dim.getHeight();
+      double cWidth = dim.getWidth();
 
-        // get the bounds of the printable area
-        double pHeight = format.getImageableHeight();
-        double pWidth = format.getImageableWidth();
+      // get the bounds of the printable area
+      double pHeight = format.getImageableHeight();
+      double pWidth = format.getImageableWidth();
 
-        double pXStart = format.getImageableX();
-        double pYStart = format.getImageableY();
+      double pXStart = format.getImageableX();
+      double pYStart = format.getImageableY();
 
-        double xRatio = pWidth / cWidth;
-        double yRatio = pHeight / cHeight;
+      double xRatio = pWidth / cWidth;
+      double yRatio = pHeight / cHeight;
 
 
-        Graphics2D g2 = (Graphics2D) g;
-        g2.translate(pXStart, pYStart);
-        g2.scale(xRatio, yRatio);
-        comp.paint(g2);
+      Graphics2D g2 = (Graphics2D) g;
+      g2.translate(pXStart, pYStart);
+      g2.scale(xRatio, yRatio);
+      comp.paint(g2);
 
-        return Printable.PAGE_EXISTS;
+      return Printable.PAGE_EXISTS;
     }
   }
 }
-  

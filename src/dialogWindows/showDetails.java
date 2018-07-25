@@ -15,17 +15,17 @@ import java.io.FileReader;
  *
  * @author imperatus
  */
-public class showDetails extends javax.swing.JDialog 
+public class showDetails extends javax.swing.JDialog
 {
+
   private static File f;
   private boolean print = false;
   private static showDetails dialog;
 
 
-  
-
   /**
    * Creates new form showDetails
+   *
    * @param parent
    * @param modal
    */
@@ -327,37 +327,36 @@ public class showDetails extends javax.swing.JDialog
     return print;
   }
 
-  
-  
-  public void setRootFile(File x)
+
+  public void setRootFile (File x)
   {
     f = x;
 
   }
-  
-  
-  public void setLabels(Car c) throws Exception
+
+
+  public void setLabels (Car c) throws Exception
   {
-    File x = new File(f+File.separator+c.getName()+"_details.dat");
-    
+    File x = new File(f + File.separator + c.getName() + "_details.dat");
+
     System.out.println(x.getAbsolutePath());
-    
-    if(x.exists())
+
+    if (x.exists())
     {
       try
       {
         BufferedReader r = new BufferedReader(new FileReader(x));
-        
+
         String line = r.readLine().trim();
-        
-        String [] s = line.split(";");
-        
+
+        String[] s = line.split(";");
+
         System.out.println(java.util.Arrays.toString(s));
-        
+
         jno.setText(s[0]);
         jido.setText(s[1]);
         jko.setText(s[2]);
-        jkmo.setText(s[3]+"km");
+        jkmo.setText(s[3] + "km");
         jfro.setText(s[4]);
         jlio.setText(s[5]);
         jnio.setText(s[6]);
@@ -368,7 +367,7 @@ public class showDetails extends javax.swing.JDialog
         jtso.setText(s[11]);
         jtwo.setText(s[12]);
         jrepo.setText(s[13]);
-        jkpkmo.setText(String.format("%.2f \u20AC",Double.parseDouble(s[9])/(Integer.parseInt(s[3])-Integer.parseInt(s[14]))));
+        jkpkmo.setText(String.format("%.2f \u20AC", Double.parseDouble(s[9]) / (Integer.parseInt(s[3]) - Integer.parseInt(s[14]))));
         jkbro.setText(s[14]);
       }
       catch (Exception e)
@@ -379,21 +378,18 @@ public class showDetails extends javax.swing.JDialog
     else
     {
       jno.setText(c.getName());
-        jido.setText(c.getId());
-        jko.setText(c.getKostenstelle());
-        jkmo.setText(String.valueOf(c.getKm())+" km");
-        jfro.setText(c.getFirstRegistration());
-        jlio.setText(c.getLastInspection());
-        jnio.setText(c.getNextInspection());
-        jlso.setText(c.getLastService());
-        jnso.setText(c.getNextService());
-        jatco.setText(String.valueOf(c.getCost()) + "\u20AC");
+      jido.setText(c.getId());
+      jko.setText(c.getKostenstelle());
+      jkmo.setText(String.valueOf(c.getKm()) + " km");
+      jfro.setText(c.getFirstRegistration());
+      jlio.setText(c.getLastInspection());
+      jnio.setText(c.getNextInspection());
+      jlso.setText(c.getLastService());
+      jnso.setText(c.getNextService());
+      jatco.setText(String.valueOf(c.getCost()) + "\u20AC");
     }
   }
-  
-  
-  
-  
+
 
   /**
    * @param args the command line arguments
@@ -452,10 +448,8 @@ public class showDetails extends javax.swing.JDialog
         }
       });
       dialog.setVisible(true);
-      
-      
-      
-      
+
+
     });
   }
 
@@ -493,8 +487,6 @@ public class showDetails extends javax.swing.JDialog
   private javax.swing.JLabel jtw;
   private javax.swing.JLabel jtwo;
   // End of variables declaration//GEN-END:variables
-
-
 
 
 }
