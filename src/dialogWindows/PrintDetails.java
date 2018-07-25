@@ -5,7 +5,16 @@
  */
 package dialogWindows;
 
+
 import data.Car;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -15,11 +24,11 @@ import java.io.FileReader;
  *
  * @author imperatus
  */
-public class showDetails extends javax.swing.JDialog 
+public class PrintDetails extends javax.swing.JDialog implements Printable
 {
   private static File f;
   private boolean print = false;
-  private static showDetails dialog;
+  private static PrintDetails dialog;
 
 
   
@@ -29,7 +38,7 @@ public class showDetails extends javax.swing.JDialog
    * @param parent
    * @param modal
    */
-  public showDetails (java.awt.Frame parent, boolean modal)
+  public PrintDetails (java.awt.Frame parent, boolean modal)
   {
     super(parent, modal);
     initComponents();
@@ -322,10 +331,7 @@ public class showDetails extends javax.swing.JDialog
   }// </editor-fold>//GEN-END:initComponents
 
 
-  public boolean isPrint ()
-  {
-    return print;
-  }
+  
 
   
   
@@ -334,7 +340,6 @@ public class showDetails extends javax.swing.JDialog
     f = x;
 
   }
-  
   
   public void setLabels(Car c) throws Exception
   {
@@ -421,20 +426,21 @@ public class showDetails extends javax.swing.JDialog
     }
     catch (ClassNotFoundException ex)
     {
-      java.util.logging.Logger.getLogger(showDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(PrintDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
     catch (InstantiationException ex)
     {
-      java.util.logging.Logger.getLogger(showDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(PrintDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
     catch (IllegalAccessException ex)
     {
-      java.util.logging.Logger.getLogger(showDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(PrintDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
     catch (javax.swing.UnsupportedLookAndFeelException ex)
     {
-      java.util.logging.Logger.getLogger(showDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+      java.util.logging.Logger.getLogger(PrintDetails.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
     }
+    //</editor-fold>
     //</editor-fold>
 
     /*
@@ -442,7 +448,8 @@ public class showDetails extends javax.swing.JDialog
      */
     java.awt.EventQueue.invokeLater(() ->
     {
-      dialog = new showDetails(new javax.swing.JFrame(), true);
+      dialog = new PrintDetails(new javax.swing.JFrame(), true);
+      
       dialog.addWindowListener(new java.awt.event.WindowAdapter()
       {
         @Override
@@ -451,8 +458,8 @@ public class showDetails extends javax.swing.JDialog
           System.exit(0);
         }
       });
-      dialog.setVisible(true);
       
+      dialog.setVisible(true);
       
       
       
@@ -495,6 +502,68 @@ public class showDetails extends javax.swing.JDialog
   // End of variables declaration//GEN-END:variables
 
 
+  @Override
+  public int print (Graphics g, PageFormat pf, int pageIndex) throws PrinterException
+  {
+    if (pageIndex > 0) { /* We have only one page, and 'page' is zero-based */
+            return NO_SUCH_PAGE;
+        }
+ 
+        /* User (0,0) is typically outside the imageable area, so we must
+         * translate by the X and Y values in the PageFormat to avoid clipping
+         */
+        Graphics2D g2d = (Graphics2D)g;
+   
+        g2d.translate(pf.getImageableX(), pf.getImageableY());
+ 
+        /* Now print the window and its visible contents */
+        PrintDetails dlg = new PrintDetails(null, true);
+        dlg.revalidate();
+        dlg.repaint();
+                dlg.printAll(g);
+ 
+        /* tell the caller that this page is part of the printed document */
+        return PAGE_EXISTS;
+ 
+    	
+  }
+  public static class Printer implements Printable {
+    final Component comp;
+
+    public Printer(Component comp){
+        this.comp = comp;
+    }
+
+    @Override
+    public int print(Graphics g, PageFormat format, int page_index) 
+            throws PrinterException {
+        if (page_index > 0) {
+            return Printable.NO_SUCH_PAGE;
+        }
+
+        // get the bounds of the component
+        Dimension dim = comp.getSize();
+        double cHeight = dim.getHeight();
+        double cWidth = dim.getWidth();
+
+        // get the bounds of the printable area
+        double pHeight = format.getImageableHeight();
+        double pWidth = format.getImageableWidth();
+
+        double pXStart = format.getImageableX();
+        double pYStart = format.getImageableY();
+
+        double xRatio = pWidth / cWidth;
+        double yRatio = pHeight / cHeight;
 
 
+        Graphics2D g2 = (Graphics2D) g;
+        g2.translate(pXStart, pYStart);
+        g2.scale(xRatio, yRatio);
+        comp.paint(g2);
+
+        return Printable.PAGE_EXISTS;
+    }
+  }
 }
+  

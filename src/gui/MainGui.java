@@ -8,8 +8,16 @@ package gui;
 import data.Car;
 import dialogWindows.AddDialog;
 import dialogWindows.DetailsDialog;
+import dialogWindows.PrintDetails;
 import dialogWindows.showDetails;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -69,6 +77,8 @@ public class MainGui extends javax.swing.JFrame
     jPanel5 = new javax.swing.JPanel();
     jbDetails = new javax.swing.JButton();
     jbMakeDetails = new javax.swing.JButton();
+    jPanel4 = new javax.swing.JPanel();
+    jButton1 = new javax.swing.JButton();
     jMenuBar1 = new javax.swing.JMenuBar();
     jMenu1 = new javax.swing.JMenu();
     jmSave = new javax.swing.JMenuItem();
@@ -152,7 +162,7 @@ public class MainGui extends javax.swing.JFrame
     gridBagConstraints.fill = java.awt.GridBagConstraints.HORIZONTAL;
     jPanel5.add(jbDetails, gridBagConstraints);
 
-    jbMakeDetails.setText("Details hinzufügen/bearbeiten");
+    jbMakeDetails.setText("Details bearbeiten");
     jbMakeDetails.addActionListener(new java.awt.event.ActionListener()
     {
       public void actionPerformed(java.awt.event.ActionEvent evt)
@@ -163,6 +173,21 @@ public class MainGui extends javax.swing.JFrame
     jPanel5.add(jbMakeDetails, new java.awt.GridBagConstraints());
 
     jPanel2.add(jPanel5);
+
+    jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Drucken"));
+    jPanel4.setLayout(new java.awt.GridBagLayout());
+
+    jButton1.setText("Details Drucken");
+    jButton1.addActionListener(new java.awt.event.ActionListener()
+    {
+      public void actionPerformed(java.awt.event.ActionEvent evt)
+      {
+        jButton1ActionPerformed(evt);
+      }
+    });
+    jPanel4.add(jButton1, new java.awt.GridBagConstraints());
+
+    jPanel2.add(jPanel4);
 
     getContentPane().add(jPanel2, java.awt.BorderLayout.SOUTH);
 
@@ -276,6 +301,46 @@ public class MainGui extends javax.swing.JFrame
     
     
   }//GEN-LAST:event_jbDetailsActionPerformed
+
+  private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
+  {//GEN-HEADEREND:event_jButton1ActionPerformed
+ int index = jtCars.getSelectedRow();
+    
+    Car c = model.getCar(index);
+    
+    PrintDetails dlg = new PrintDetails(this, true);
+    dlg.setMinimumSize(new Dimension(700, 500));
+    dlg.setRootFile(f);
+    try
+    {
+      dlg.setLabels(c);
+    }
+    catch (Exception ex)
+    {
+      JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler aufgetreten...", JOptionPane.ERROR_MESSAGE);
+    }
+try
+            {
+              PrinterJob job = PrinterJob.getPrinterJob();
+              PageFormat preformat = job.defaultPage();
+              preformat.setOrientation(PageFormat.PORTRAIT);
+              PageFormat postformat = job.pageDialog(preformat);
+              
+              if(preformat != postformat)
+              {
+                job.setPrintable(new Printer(dlg.getComponent(0)), preformat);
+                if(job.printDialog())
+                {
+                  job.print();
+                }
+              }
+              
+            }
+catch(Exception ex)
+        {
+          
+        }
+      }//GEN-LAST:event_jButton1ActionPerformed
 
 
   private File openFile ()
@@ -447,11 +512,13 @@ public class MainGui extends javax.swing.JFrame
   }
 
   // Variables declaration - do not modify//GEN-BEGIN:variables
+  private javax.swing.JButton jButton1;
   private javax.swing.JMenu jMenu1;
   private javax.swing.JMenuBar jMenuBar1;
   private javax.swing.JPanel jPanel1;
   private javax.swing.JPanel jPanel2;
   private javax.swing.JPanel jPanel3;
+  private javax.swing.JPanel jPanel4;
   private javax.swing.JPanel jPanel5;
   private javax.swing.JScrollPane jScrollPane1;
   private javax.swing.JButton jbAdd;
@@ -477,4 +544,44 @@ public class MainGui extends javax.swing.JFrame
                                     JOptionPane.ERROR_MESSAGE);
     }    // TODO add your handling code here:
   }
+  
+  
+  public static class Printer implements Printable {
+    final Component comp;
+
+    public Printer(Component comp){
+        this.comp = comp;
+    }
+
+    @Override
+    public int print(Graphics g, PageFormat format, int page_index) 
+            throws PrinterException {
+        if (page_index > 0) {
+            return Printable.NO_SUCH_PAGE;
+        }
+
+        // get the bounds of the component
+        Dimension dim = comp.getSize();
+        double cHeight = dim.getHeight();
+        double cWidth = dim.getWidth();
+
+        // get the bounds of the printable area
+        double pHeight = format.getImageableHeight();
+        double pWidth = format.getImageableWidth();
+
+        double pXStart = format.getImageableX();
+        double pYStart = format.getImageableY();
+
+        double xRatio = pWidth / cWidth;
+        double yRatio = pHeight / cHeight;
+
+
+        Graphics2D g2 = (Graphics2D) g;
+        g2.translate(pXStart, pYStart);
+        g2.scale(xRatio, xRatio);
+        comp.paint(g2);
+
+        return Printable.PAGE_EXISTS;
+    }
+}
 }
