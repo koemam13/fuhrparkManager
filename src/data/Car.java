@@ -101,6 +101,10 @@ public class Car
   {
     return cost;
   }
+  
+  /* write method
+   * writes all the Objects variables into the file it gets for main.gui
+   */
 
 
   public void write (Writer w) throws IOException

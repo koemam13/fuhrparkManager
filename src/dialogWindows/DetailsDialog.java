@@ -9,6 +9,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.List;
 import javax.swing.JOptionPane;
 import tableModel.CostTableModel;
@@ -513,54 +514,7 @@ public class DetailsDialog extends javax.swing.JDialog
 
     try
     {
-      BufferedWriter w = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_details.dat")));
-
-      w.write(name);
-      w.write(";");
-      w.write(id);
-      w.write(";");
-      w.write(kostenstelle);
-      w.write(";");
-      w.write(String.valueOf(km));
-      w.write(";");
-      w.write(firstRegistration);
-      w.write(";");
-      w.write(lastInspection);
-      w.write(";");
-      w.write(nextInspection);
-      w.write(";");
-      w.write(lastService);
-      w.write(";");
-      w.write(nextService);
-      w.write(";");
-      w.write(String.valueOf(allTimeCost));
-      w.write(";");
-      w.write(tireDims);
-      w.write(";");
-      w.write(summer);
-      w.write(";");
-      w.write(winter);
-      w.write(";");
-      w.write(repairs);
-      w.write(";");
-      w.write(String.valueOf(kmbr));
-
-
-      w.close();
-
-      try
-      {
-        BufferedWriter x = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_costs.dat")));
-
-        model.write(x);
-
-        x.close();
-      }
-      catch (Exception e)
-      {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
-      }
-
+      save();
     }
     catch (Exception e)
     {
@@ -576,52 +530,7 @@ public class DetailsDialog extends javax.swing.JDialog
 
     try
     {
-      BufferedWriter w = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_details.dat")));
-
-      w.write(name);
-      w.write(";");
-      w.write(id);
-      w.write(";");
-      w.write(kostenstelle);
-      w.write(";");
-      w.write(String.valueOf(km));
-      w.write(";");
-      w.write(firstRegistration);
-      w.write(";");
-      w.write(lastInspection);
-      w.write(";");
-      w.write(nextInspection);
-      w.write(";");
-      w.write(lastService);
-      w.write(";");
-      w.write(nextService);
-      w.write(";");
-      w.write(String.valueOf(allTimeCost));
-      w.write(";");
-      w.write(tireDims);
-      w.write(";");
-      w.write(summer);
-      w.write(";");
-      w.write(winter);
-      w.write(";");
-      w.write(repairs);
-      w.write(";");
-      w.write(String.valueOf(kmbr));
-
-      w.close();
-
-      try
-      {
-        BufferedWriter x = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_costs.dat")));
-
-        model.write(x);
-
-        x.close();
-      }
-      catch (Exception e)
-      {
-        JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
-      }
+      save();
 
     }
     catch (Exception e)
@@ -792,6 +701,19 @@ public class DetailsDialog extends javax.swing.JDialog
         @Override
         public void windowClosing (java.awt.event.WindowEvent e)
         {
+          SaveAndClose dlg = new SaveAndClose(null, true);
+          dlg.setVisible(true);
+          if(dlg.isWantSave()){
+            try
+            {
+              dialog.save();
+            }
+            catch (IOException ex)
+            {
+              JOptionPane.showMessageDialog(null, ex.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+            }
+
+          }
           System.exit(0);
         }
       });
@@ -838,4 +760,54 @@ public class DetailsDialog extends javax.swing.JDialog
   private javax.swing.JTextField jtfWinter;
   // End of variables declaration//GEN-END:variables
 
+  
+  private void save() throws IOException
+  {
+    BufferedWriter w = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_details.dat")));
+
+      w.write(name);
+      w.write(";");
+      w.write(id);
+      w.write(";");
+      w.write(kostenstelle);
+      w.write(";");
+      w.write(String.valueOf(km));
+      w.write(";");
+      w.write(firstRegistration);
+      w.write(";");
+      w.write(lastInspection);
+      w.write(";");
+      w.write(nextInspection);
+      w.write(";");
+      w.write(lastService);
+      w.write(";");
+      w.write(nextService);
+      w.write(";");
+      w.write(String.valueOf(allTimeCost));
+      w.write(";");
+      w.write(tireDims);
+      w.write(";");
+      w.write(summer);
+      w.write(";");
+      w.write(winter);
+      w.write(";");
+      w.write(repairs);
+      w.write(";");
+      w.write(String.valueOf(kmbr));
+
+      w.close();
+      
+       try
+      {
+        BufferedWriter x = new BufferedWriter(new FileWriter(new File(f + File.separator + name + "_costs.dat")));
+
+        model.write(x);
+
+        x.close();
+      }
+      catch (Exception e)
+      {
+        JOptionPane.showMessageDialog(this, e.getMessage(), "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+      }
+  }
 }

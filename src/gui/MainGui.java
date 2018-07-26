@@ -9,11 +9,13 @@ import data.Car;
 import dialogWindows.AddDialog;
 import dialogWindows.DetailsDialog;
 import dialogWindows.PrintDetails;
+import dialogWindows.SaveAndClose;
 import dialogWindows.showDetails;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.WindowEvent;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
@@ -214,12 +216,19 @@ public class MainGui extends javax.swing.JFrame
     pack();
   }// </editor-fold>//GEN-END:initComponents
 
+  /* Add Button
+  * creating a new Dialog window which pops up in the mid of the maingui
+  * after that grabbing the data out of the dialog window and adding
+  * it to my Table model with a return value 0 for costs since those will 
+  * be calculated in the Details dialog
+  */
   private void jbAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbAddActionPerformed
   {//GEN-HEADEREND:event_jbAddActionPerformed
 
     AddDialog dlg = new AddDialog(this, true);
     dlg.setMinimumSize(new Dimension(400, 400));
     dlg.setTitle("Eingabefenster");
+    dlg.setLocationRelativeTo(this);
     dlg.setVisible(true);
     if (!dlg.isPressedOK())
     {
@@ -228,7 +237,10 @@ public class MainGui extends javax.swing.JFrame
     Car c = new Car(dlg.getName(), dlg.getId(), dlg.getKostenstelle(), dlg.getKm(), dlg.getFirstRegistration(), dlg.getlInspection(), dlg.getnInspection(), dlg.getlService(), dlg.getnService(), 0);
     model.add(c);
   }//GEN-LAST:event_jbAddActionPerformed
-
+/* Delete Button
+ * Deleting the selected row with a plausibility check => if no row is selected
+ * a dialog window will pop up informing the user to select a row.
+ */
   private void jbDelActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDelActionPerformed
   {//GEN-HEADEREND:event_jbDelActionPerformed
     int index = jtCars.getSelectedRow();
@@ -241,7 +253,14 @@ public class MainGui extends javax.swing.JFrame
 
     model.remove(index);
   }//GEN-LAST:event_jbDelActionPerformed
-
+/* Edit Details button
+ * gets the selected rows index and afterward with the index the Car at the selected 
+ * position (includes again a plausi check). After that i forward the Car to the Details dialog window and the save 
+ * root path to read the Detail file to the selected car (if there exists one).
+ * After the ok button of the Dialog window is pressed it grabbs the Object Car
+ * out of the dialog and edits the current car (which was selected) due to 
+ * possible changes in the Details dailog.
+ */
   private void jbMakeDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbMakeDetailsActionPerformed
   {//GEN-HEADEREND:event_jbMakeDetailsActionPerformed
     int index = jtCars.getSelectedRow();
@@ -278,7 +297,11 @@ public class MainGui extends javax.swing.JFrame
     Car c2 = dlg.getCar();
     model.set(index, c2);
   }//GEN-LAST:event_jbMakeDetailsActionPerformed
-
+/* Show Details button
+ * Gets the selected row index (again plausi check included). after that grabs the object
+ * Car with the index of the selected row out of the model and forwards it to the dialog window.
+ * if the dialog window gets closed nothing happens
+ */
   private void jbDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbDetailsActionPerformed
   {//GEN-HEADEREND:event_jbDetailsActionPerformed
     int index = jtCars.getSelectedRow();
@@ -308,7 +331,20 @@ public class MainGui extends javax.swing.JFrame
 
 
   }//GEN-LAST:event_jbDetailsActionPerformed
-
+/* Print the Details
+ * Grabs the index of the selected row (plausi check). after that grabbs the Car
+ * with the index of the selected row out of the model and forwards it to the PrintDetails
+ * dialog window. Also forwards the root location path. dlg.setLabels sets all the Labels 
+ * with the Data if smt goes wrong the Exceeption gets caught in the Joptionpane
+ * and gets displayed on screen stating the Exception msg. if setLabels worked
+ * it will go on and try to print the jFrame. First i set the preformat for the page to
+ * default and open the Page format dialog window. then i grabb the Formats set in the
+ * page fortmat dialog into the var postformat . after that i check if the user hit cancel 
+ * or ok. if he hits cancel it will stopp the printing proceess. if he hits ok it opens the
+ * print dialog window where the user has to select which printer and so on.
+ * after that it attempts to print the JFrame to the printer with the set Details with a 
+ * "Done" message when the print is finished.
+ */
   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jButton1ActionPerformed
   {//GEN-HEADEREND:event_jButton1ActionPerformed
     int index = jtCars.getSelectedRow();
@@ -345,6 +381,7 @@ public class MainGui extends javax.swing.JFrame
         if (job.printDialog())
         {
           job.print();
+          System.out.println("Done");
         }
       }
 
@@ -355,11 +392,18 @@ public class MainGui extends javax.swing.JFrame
     }
    }//GEN-LAST:event_jButton1ActionPerformed
 
+  /* Save menu
+   * starts the save method written below
+   */
   private void jmSaveActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmSaveActionPerformed
   {//GEN-HEADEREND:event_jmSaveActionPerformed
     save();
   }//GEN-LAST:event_jmSaveActionPerformed
-
+/* Refresh menu item
+ *  starts the read File method and forwards the filename/path
+ * if an error occurs it display a messageDialog window displaying 
+ * the issue that occured
+ */
   private void jmRefreshActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jmRefreshActionPerformed
   {//GEN-HEADEREND:event_jmRefreshActionPerformed
     try
@@ -368,13 +412,26 @@ public class MainGui extends javax.swing.JFrame
     }
     catch (FileNotFoundException ex)
     {
-      JOptionPane.showMessageDialog(this, "Fehler konnet Dateien nicht einlesen", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(this, "Fehler konnte Dateien nicht einlesen", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }
   }//GEN-LAST:event_jmRefreshActionPerformed
 
 
   /**
    * @param args the command line arguments
+   */
+  
+  
+  /* Main 
+   *  in the main metho i check if there is a saveRoot file which contains the path to the
+   * Data save directory or if not. if there is no save directory file in the Directory where
+   * the programm is initialized it will open a dialog window where the user can select the 
+   * directory where the data files will be saved. after the user selected the directory it will
+   * write the path of that directory into a file into the directory where the programm was initialized
+   * . if there is already a save path file in the programs directory it will read the file and set the 
+   * File f (global var) to path which is in the file. after that the programm looks if there already exists
+   * a save file in the save file directory if so it will read in the file and set the Table's contents
+   * 
    */
   public static void main (String args[]) throws IOException, ClassNotFoundException
   {
@@ -425,7 +482,21 @@ public class MainGui extends javax.swing.JFrame
       public void run ()
       {
         MainGui main = new MainGui();
-        main.setVisible(true);
+        main.addWindowListener(new java.awt.event.WindowAdapter()
+        {
+          @Override
+          public void windowClosing (WindowEvent e)
+          {
+            SaveAndClose dlg = new SaveAndClose(null, true);
+            dlg.setVisible(true);
+            if(dlg.isWantSave())
+              main.save();
+            System.exit(0);
+            
+          }
+          
+        });
+        
 
         String s = null;
         try
@@ -474,7 +545,7 @@ public class MainGui extends javax.swing.JFrame
 
               File x = main.openFile();
 
-              File i = new File(s + File.separator + "rootPath.dat");
+              File i = new File(s + File.separator + "test.dat");
 
               BufferedWriter w = new BufferedWriter(new FileWriter(i));
 
@@ -495,7 +566,7 @@ public class MainGui extends javax.swing.JFrame
             }
           }
         }
-
+         main.setVisible(true);
 
       }
     });
@@ -522,6 +593,12 @@ public class MainGui extends javax.swing.JFrame
   private javax.swing.JTable jtCars;
   // End of variables declaration//GEN-END:variables
 
+  
+  /* Save method
+   * saves the Tables contents into the save.dat file in the installation directory
+   * if there goes smt wrong there will be a showMessage dialog window apear
+   * informing the user that smt went wron during the process of writting the file
+   */
   private void save ()
   {
     try (BufferedWriter w = new BufferedWriter(new FileWriter(f + File.separator + "save.dat")))
@@ -537,7 +614,11 @@ public class MainGui extends javax.swing.JFrame
     }    // TODO add your handling code here:
   }
 
-
+/* open File methos
+ *  this method will be use if there is no set root directory
+ *  it will open a chooser window and return the selected directory
+ */
+  
   private File openFile ()
   {
     File ez = null;
@@ -553,6 +634,11 @@ public class MainGui extends javax.swing.JFrame
 
     return ez = chooser.getSelectedFile();
   }
+  
+  /* read File method
+   * it reads the given r and insert the contents of the file into the tablemodel
+   * if a error occurs it will diplay the exception msg in a showMessage Dialog
+   */
 
 
   private void readFile (BufferedReader r)
@@ -571,7 +657,14 @@ public class MainGui extends javax.swing.JFrame
 
   }
 
-
+/* Printer
+ * this method was found at https://stackoverflow.com/questions/12764634/printing-a-jframe-and-its-components
+ * the printer gets the component/JFrame
+ * the methos print checks if the page_index is < 0 if so it retuns Printable.NO_SUCH_PAGE
+ * if it went through the check it gets the component size and the page size. afterwards it checks
+ * the orientation of the Print (Portrait / Landscape) and scales the immage to the given
+ * orientation. Afte the scaling it starts the print job and returns Printable.PAGE_EXIT
+ */
   public static class Printer implements Printable
   {
 
