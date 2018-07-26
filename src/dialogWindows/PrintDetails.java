@@ -11,13 +11,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 
 /**
@@ -28,7 +28,7 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
 {
 
   private static File f;
-  private boolean print = false;
+  private final boolean print = false;
   private static PrintDetails dialog;
 
 
@@ -373,7 +373,7 @@ public class PrintDetails extends javax.swing.JDialog implements Printable
         jkpkmo.setText(String.format("%.2f \u20AC", Double.parseDouble(s[9]) / (Integer.parseInt(s[3]) - Integer.parseInt(s[14]))));
         jkbro.setText(s[14]);
       }
-      catch (Exception e)
+      catch (IOException | NumberFormatException e)
       {
         throw new Exception("Fehler beim Einlesen der Datei.");
       }

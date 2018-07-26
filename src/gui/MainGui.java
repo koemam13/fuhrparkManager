@@ -26,7 +26,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -103,13 +102,6 @@ public class MainGui extends javax.swing.JFrame
         "Title 1", "Title 2", "Title 3", "Title 4"
       }
     ));
-    jtCars.addMouseListener(new java.awt.event.MouseAdapter()
-    {
-      public void mouseClicked(java.awt.event.MouseEvent evt)
-      {
-        jtCarsMouseClicked(evt);
-      }
-    });
     jScrollPane1.setViewportView(jtCars);
 
     jPanel1.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -250,11 +242,6 @@ public class MainGui extends javax.swing.JFrame
     model.remove(index);
   }//GEN-LAST:event_jbDelActionPerformed
 
-  private void jtCarsMouseClicked(java.awt.event.MouseEvent evt)//GEN-FIRST:event_jtCarsMouseClicked
-  {//GEN-HEADEREND:event_jtCarsMouseClicked
-
-  }//GEN-LAST:event_jtCarsMouseClicked
-
   private void jbMakeDetailsActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbMakeDetailsActionPerformed
   {//GEN-HEADEREND:event_jbMakeDetailsActionPerformed
     int index = jtCars.getSelectedRow();
@@ -268,6 +255,9 @@ public class MainGui extends javax.swing.JFrame
     Car c = model.getCar(index);
 
     DetailsDialog dlg = new DetailsDialog(this, true);
+    dlg.setMinimumSize(new Dimension(800, 800));
+    dlg.setTitle("Details");
+    dlg.setLocationRelativeTo(this);
 
     dlg.setFileRoot(f);
     try
@@ -303,6 +293,8 @@ public class MainGui extends javax.swing.JFrame
 
     showDetails dlg = new showDetails(this, true);
     dlg.setMinimumSize(new Dimension(700, 500));
+    dlg.setLocationRelativeTo(this);
+    dlg.setTitle("Details");
     dlg.setRootFile(f);
     try
     {

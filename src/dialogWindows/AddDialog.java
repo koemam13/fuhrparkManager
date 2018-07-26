@@ -36,13 +36,13 @@ public class AddDialog extends javax.swing.JDialog
 
   /**
    * Creates new form AddDialog
+   * @param parent
+   * @param modal
    */
   public AddDialog (java.awt.Frame parent, boolean modal)
   {
     super(parent, modal);
-    setLocationRelativeTo(parent);
     initComponents();
-    setTitle("Eingabefenster");
   }
 
 

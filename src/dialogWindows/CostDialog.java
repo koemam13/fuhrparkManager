@@ -23,6 +23,8 @@ public class CostDialog extends javax.swing.JDialog
 
   /**
    * Creates new form CostDialog
+   * @param parent
+   * @param modal
    */
   public CostDialog (java.awt.Frame parent, boolean modal)
   {
@@ -117,7 +119,7 @@ public class CostDialog extends javax.swing.JDialog
     {
       cost = Double.parseDouble(s);
     }
-    catch (Exception e)
+    catch (NumberFormatException e)
     {
       JOptionPane.showMessageDialog(this, "Bitte eine Zahl eingeben", "Fehler aufgetreten", JOptionPane.ERROR_MESSAGE);
     }

@@ -53,7 +53,6 @@ public class DetailsDialog extends javax.swing.JDialog
   {
     super(parent, modal);
     initComponents();
-    setMaximumSize(new Dimension(800, 800));
     jtCost.setModel(model);
   }
 
@@ -420,6 +419,9 @@ public class DetailsDialog extends javax.swing.JDialog
   private void jbAddActionPerformed(java.awt.event.ActionEvent evt)//GEN-FIRST:event_jbAddActionPerformed
   {//GEN-HEADEREND:event_jbAddActionPerformed
     CostDialog dlg = new CostDialog(null, true);
+    dlg.setLocationRelativeTo(this);
+    dlg.setTitle("Eingabefenster");
+    dlg.setMinimumSize(new Dimension(50, 30));
     dlg.setVisible(true);
 
     if (!dlg.isOKPressed())
@@ -451,6 +453,7 @@ public class DetailsDialog extends javax.swing.JDialog
       dlg.setCost(c);
       dlg.setMinimumSize(new Dimension(400, 400));
       dlg.setTitle("Bearbeiten...");
+      dlg.setLocationRelativeTo(this);
       dlg.setVisible(true);
       if (!dlg.isOKPressed())
       {

@@ -9,6 +9,7 @@ import data.Car;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 
 /**
@@ -19,7 +20,7 @@ public class showDetails extends javax.swing.JDialog
 {
 
   private static File f;
-  private boolean print = false;
+  private final boolean print = false;
   private static showDetails dialog;
 
 
@@ -370,7 +371,7 @@ public class showDetails extends javax.swing.JDialog
         jkpkmo.setText(String.format("%.2f \u20AC", Double.parseDouble(s[9]) / (Integer.parseInt(s[3]) - Integer.parseInt(s[14]))));
         jkbro.setText(s[14]);
       }
-      catch (Exception e)
+      catch (IOException | NumberFormatException e)
       {
         throw new Exception("Fehler beim Einlesen der Datei.");
       }
