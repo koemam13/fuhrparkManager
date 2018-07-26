@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 import javax.swing.JOptionPane;
 import tableModel.CostTableModel;
 
@@ -49,6 +48,8 @@ public class DetailsDialog extends javax.swing.JDialog
 
   /**
    * Creates new form DetailsDialog
+   * @param parent
+   * @param modal
    */
   public DetailsDialog (java.awt.Frame parent, boolean modal)
   {
